@@ -71,8 +71,8 @@ function buildEventTree(events: RawEvent[]): EventTreeNode[] {
 import { Client } from '$lib/graphql/client';
 import { GetEventTreeDocument } from '$lib/graphql/generated';
 
+const { event } = await Client.request(GetEventTreeDocument);
 export const load = async () => {
-	const { event } = await Client.request(GetEventTreeDocument);
 	const eventTree = buildEventTree(event);
 	return { eventTree };
 };
