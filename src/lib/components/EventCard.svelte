@@ -36,7 +36,6 @@
 	const progress = $derived(getProgress(event.startAt, event.endAt));
 	const userCount = $derived(event.usersRelation.length);
 	const childCount = $derived(event.children.length);
-	console.log(event);
 </script>
 
 <article class="card" class:leaf={variant === 'leaf'} data-status={status}>
@@ -67,7 +66,7 @@
 	<div class="card-footer">
 		<span class="type-pill">{event.object.type}</span>
 		<span class="meta-right">
-			{#if childCount > 0}
+			<!-- {#if childCount > 0}
 				<button class="children-link" onclick={() => goto(resolve(`/events/${event.id}`))}>
 					{childCount} events
 					<span class="chevron" aria-hidden="true"></span>
@@ -76,8 +75,22 @@
 				<span class="users-count">{userCount} users</span>
 			{:else}
 				<span class="users-count">—</span>
-			{/if}
+			{/if} -->
 		</span>
+	</div>
+	<div class="card-actions">
+		<button
+			class="children-link"
+			onclick={() => goto(resolve(`/events/${event.id}/users`))}
+			disabled={userCount < 1}
+		>
+			{userCount} users
+			<span class="chevron" aria-hidden="true"></span>
+		</button>
+		<button class="children-link" onclick={() => goto(resolve(`/events/${event.id}`))}>
+			{childCount} events
+			<span class="chevron" aria-hidden="true"></span>
+		</button>
 	</div>
 </article>
 
@@ -249,5 +262,23 @@
 		transform: rotate(45deg);
 		margin-left: 2px;
 		margin-top: 3px;
+	}
+
+	.card-actions {
+		margin-top: 10px;
+		display: flex;
+		justify-content: space-between;
+		font-size: 12px;
+	}
+	.children-link:disabled {
+		opacity: 0.35;
+		color: #6b7f96;
+		cursor: not-allowed;
+		background: hsl(213, 40%, 12%);
+		border-color: hsl(213, 40%, 18%);
+	}
+
+	.children-link:disabled:hover {
+		transform: none;
 	}
 </style>

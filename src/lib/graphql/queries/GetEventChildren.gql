@@ -1,28 +1,32 @@
 fragment EventFields on event {
-	id
-	path
-	createdAt
-	startAt
-	endAt
-	parentId
-	object {
-		authorId
-		type
-		name
-	}
-	children(order_by: { endAt: desc }) {
-		id
-	}
-	usersRelation {
-		id
-	}
+  id
+  path
+  createdAt
+  startAt
+  endAt
+  parentId
+  object {
+    authorId
+    type
+    name
+  }
+  children(order_by: {endAt: desc}) {
+    id
+  }
+  usersRelation {
+    userId
+    level
+  }
 }
 
 query GetEventChildren {
-	rootEvents: event(where: { parentId: { _is_null: true } }, order_by: { endAt: desc }) {
-		...EventFields
-	}
-	childEvents: event(where: { parentId: { _is_null: false } }, order_by: { endAt: desc }) {
-		...EventFields
-	}
+  rootEvents: event(where: {parentId: {_is_null: true}}, order_by: {endAt: desc}) {
+    ...EventFields
+  }
+  childEvents: event(
+    where: {parentId: {_is_null: false}}
+    order_by: {endAt: desc}
+  ) {
+    ...EventFields
+  }
 }

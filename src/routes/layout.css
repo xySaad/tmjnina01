@@ -8,14 +8,17 @@
 @plugin '@tailwindcss/typography';
 
 :root {
-	--bg-3: var(--color-blue-900, oklch(37.9% 0.146 265.522));
-	--primary: hsl(0, 0%, 0%);
-	--secondary: hsl(204, 100%, 11%);
+	--primary: hsl(222, 47%, 6%); /* deep navy, not pure black */
+	--secondary: hsl(204, 60%, 9%);
+	--text-primary: hsl(210, 20%, 90%); /* warm off-white, not #fff */
+	--text-muted: hsl(215, 15%, 50%);
+	--text-value: hsl(210, 15%, 78%);
 }
 
 html {
-	color: white;
+	color: var(--text-primary);
 	background: var(--primary);
+
 	height: 100vh;
 	overflow: hidden;
 

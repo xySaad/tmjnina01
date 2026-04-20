@@ -31,7 +31,9 @@
 			</h2>
 			<div class="users-grid">
 				{#each users as user (user.publicUser?.id)}
-					<UserCard user={user.publicUser} />
+					{#if user.publicUser}
+						<UserCard user={user.publicUser}  userLevel={-1}/>
+					{/if}
 				{/each}
 			</div>
 		</section>

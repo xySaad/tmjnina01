@@ -1,0 +1,13 @@
+query GetUsers {
+  user_public_view {
+    id
+    login
+    avatarUrl
+    firstName
+    lastName
+    canBeAuditor
+    canAccessPlatform
+    campus
+    githubId
+  }
+}
