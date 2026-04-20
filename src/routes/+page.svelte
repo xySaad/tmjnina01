@@ -1,44 +1,51 @@
-<script lang="ts">
-	import { SvelteSet } from 'svelte/reactivity';
-	import TreePanel from './components/TreePanel.svelte';
-	import DetailPanel from './components/DetailPanel.svelte';
-	import type { EventTreeNode } from './+page';
-
-	let { data } = $props();
-	const eventTree = $derived(data.eventTree);
-
-	let selectedNode = $state<EventTreeNode | null>(null);
-	let expandedIds = $state<Set<number>>(new Set());
-
-	function toggleExpand(id: number, e: MouseEvent) {
-		e.stopPropagation();
-		const next = new SvelteSet(expandedIds);
-		if (next.has(id)) next.delete(id);
-		else next.add(id);
-		expandedIds = next;
-	}
-
-	function selectNode(node: EventTreeNode) {
-		selectedNode = node;
-		if (node.children.length > 0) {
-			const next = new SvelteSet(expandedIds);
-			next.add(node.id);
-			expandedIds = next;
-		}
-	}
+<script>
+	import { resolve } from '$app/paths';
 </script>
 
-<div class="layout">
-	<TreePanel {eventTree} {selectedNode} {expandedIds} {selectNode} {toggleExpand} />
-	<DetailPanel {selectedNode} {selectNode} />
-</div>
+<nav class="links">
+	<a class="card" href={resolve('/eventsTree')}>
+		<span>🌳</span>
+		<p>Event Tree</p>
+	</a>
+
+	<a class="card" href={resolve('/events')}>
+		<span>📅</span>
+		<p>Events</p>
+	</a>
+</nav>
 
 <style>
-	.layout {
-		display: grid;
-		grid-template-columns: 280px 1fr;
-		height: 100vh;
-		overflow: hidden;
-		font-family: 'Space Mono', 'Courier New', monospace;
+	.links {
+		display: flex;
+		gap: 1.5rem;
+		margin: auto;
+	}
+
+	.card {
+		text-decoration: none;
+		background: #1e293b;
+		padding: 1.5rem 2rem;
+		border-radius: 12px;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 0.5rem;
+		color: inherit;
+		transition: 0.2s ease;
+		min-width: 120px;
+	}
+
+	.card:hover {
+		background: #334155;
+		transform: translateY(-4px);
+	}
+
+	.card span {
+		font-size: 1.8rem;
+	}
+
+	.card p {
+		margin: 0;
+		font-size: 0.95rem;
 	}
 </style>
