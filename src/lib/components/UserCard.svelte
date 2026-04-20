@@ -6,13 +6,7 @@
 
 <article class="user-card">
 	<header class="user-header">
-		<div
-			class={{
-				avatar: true,
-				banned: !user.canAccessPlatform,
-				unavailable: !user.canBeAuditor
-			}}
-		>
+		<div class={{ avatar: true, banned: !user.canAccessPlatform }}>
 			{#if user.avatarUrl}
 				<img src={user.avatarUrl} alt={user.login} />
 			{/if}
@@ -57,9 +51,65 @@
 			<dd>{user.lastName}</dd>
 		</div>
 	</dl>
+	<div class="unavailable-banner" data-visible={user.canAccessPlatform && !user.canBeAuditor}>
+		<svg
+			xmlns="http://www.w3.org/2000/svg"
+			width="14"
+			height="14"
+			viewBox="0 0 24 24"
+			fill="none"
+			stroke="currentColor"
+			stroke-width="2"
+			stroke-linecap="round"
+			stroke-linejoin="round"
+		>
+			<circle cx="12" cy="12" r="10" />
+			<line x1="15" y1="9" x2="9" y2="15" />
+			<line x1="9" y1="9" x2="15" y2="15" />
+		</svg>
+		<span>Unavailable for audit</span>
+	</div>
 </article>
 
 <style>
+	.unavailable-banner {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.5rem;
+		width: 100%;
+		margin-top: 0.75rem;
+		margin-bottom: 0.5rem;
+		padding: 0.5rem 0.75rem;
+		border-radius: 0.625rem;
+		font-size: 0.75rem;
+		font-weight: 600;
+		letter-spacing: 0.02em;
+		text-transform: uppercase;
+		color: hsl(0, 70%, 65%);
+		background: hsla(0, 60%, 15%, 0.35);
+		border: 1px solid hsla(0, 50%, 40%, 0.15);
+		backdrop-filter: blur(8px);
+		box-shadow: inset 0 1px 0 hsla(0, 50%, 50%, 0.06);
+
+		opacity: 0;
+		transform: translateY(-6px) scale(0.98);
+		pointer-events: none;
+		transition:
+			opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+			transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+	}
+
+	.unavailable-banner[data-visible='true'] {
+		opacity: 1;
+		transform: translateY(0) scale(1);
+		pointer-events: auto;
+	}
+
+	.unavailable-banner svg {
+		flex-shrink: 0;
+		opacity: 0.85;
+	}
 	.user-card {
 		border-radius: 1rem;
 		border: 1px solid hsla(215, 40%, 70%, 0.08);
