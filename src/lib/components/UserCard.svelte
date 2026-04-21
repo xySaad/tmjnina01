@@ -1,10 +1,12 @@
 <script lang="ts">
 	import { recordsMap } from '$lib/state/users';
+	import type { EventUserRel } from '$lib/types/events';
 	import type { User } from '$lib/types/user';
 	import { formatDate, timeUntil } from '$lib/utils/time';
 
-	let { user, userLevel, auditRatio }: { user: User; userLevel: number; auditRatio: number } =
-		$props();
+	let { user, eventUserRel }: { user: User; eventUserRel: EventUserRel | undefined } = $props();
+	const level = $derived(eventUserRel?.level);
+	const auditRatio = $derived(eventUserRel?.userAuditRatio);
 </script>
 
 <article class="user-card">
@@ -33,9 +35,9 @@
 		<div class="user-meta">
 			<div class="title-row">
 				<h2 class="login">{user.login}</h2>
-				{#if userLevel}
-					<span class="user-level" data-level={userLevel} data-tooltip="Level {userLevel}">
-						{userLevel}
+				{#if level}
+					<span class="user-level" data-level={level} data-tooltip="Level {level}">
+						{level}
 					</span>
 				{/if}
 			</div>
@@ -53,7 +55,7 @@
 		</div>
 		<div>
 			<dt>audit ratio</dt>
-			<dd>{auditRatio.toFixed(2)}</dd>
+			<dd>{auditRatio ? Number(auditRatio).toFixed(2) : '_'}</dd>
 		</div>
 	</dl>
 	<div class="unavailable-banner" data-visible={user.canAccessPlatform && !user.canBeAuditor}>

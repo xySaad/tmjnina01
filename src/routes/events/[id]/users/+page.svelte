@@ -9,12 +9,11 @@
 	const event = $derived(eventsMap.get(+params.id));
 	let search = $state('');
 
-	const filterEventUsers = () => {
+	const getEventUsers = () => {
 		return event?.usersRelation
-			.map((userRel) => {
-				const user = usersMap.get(userRel.userId);
-				if (user)
-					return { ...user, level: userRel.level, auditRatio: Number(userRel.userAuditRatio) };
+			.map((eventUserRel) => {
+				const user = usersMap.get(eventUserRel.userId);
+				if (user) return { ...user, eventUserRel };
 			})
 			.filter(
 				(u): u is NonNullable<typeof u> =>
@@ -25,15 +24,15 @@
 			);
 	};
 
-	const filteredUsers = $derived(filterEventUsers());
+	const eventUsers = $derived(getEventUsers());
 </script>
 
 <div class="eventUsers">
 	<input bind:value={search} type="search" placeholder="Search by login or name" class="search" />
 	<div class="usersList">
-		{#each filteredUsers as user (user?.id)}
+		{#each eventUsers as user (user?.id)}
 			<div class="user">
-				<UserCard {user} userLevel={user.level} auditRatio={user.auditRatio} />
+				<UserCard {user} eventUserRel={user.eventUserRel} />
 			</div>
 		{/each}
 	</div>
