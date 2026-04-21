@@ -10,7 +10,7 @@ query GetUsers {
 		campus
 		githubId
 	}
-	record_public_view(where: { endAt: { _is_null: false } }) {
+	record_public_view(order_by: { endAt: desc_nulls_last }) {
 		userId
 		endAt
 	}
