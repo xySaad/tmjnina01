@@ -87,7 +87,11 @@
 			{userCount} users
 			<span class="chevron" aria-hidden="true"></span>
 		</button>
-		<button class="children-link" onclick={() => goto(resolve(`/events/${event.id}`))}>
+		<button
+			class="children-link"
+			onclick={() => goto(resolve(`/events/${event.id}`))}
+			disabled={childCount < 1}
+		>
 			{childCount} events
 			<span class="chevron" aria-hidden="true"></span>
 		</button>
