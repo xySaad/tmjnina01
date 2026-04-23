@@ -93,9 +93,18 @@ select {
 	gap: 5px;
 	--slide-spacing: 10px;
 
+	&.dragging .embla__viewport .embla__container .embla__slide {
+		cursor: grabbing;
+	}
+
 	.embla__viewport {
 		width: 100%;
 		overflow: hidden;
+
+		&.no-overflow {
+			width: fit-content;
+			overflow: visible;
+		}
 
 		.embla__container {
 			user-select: none;
@@ -104,6 +113,7 @@ select {
 			margin-left: calc(var(--slide-spacing) * -1);
 
 			.embla__slide {
+				cursor: grab;
 				padding-left: var(--slide-spacing);
 			}
 		}

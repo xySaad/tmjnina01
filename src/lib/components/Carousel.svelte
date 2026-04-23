@@ -1,40 +1,51 @@
 <script lang="ts">
+	import { reSize } from '$lib/actions/resize';
 	import type { EmblaCarouselType, EmblaEventType, EmblaOptionsType } from 'embla-carousel';
 	import useEmblaCarousel from 'embla-carousel-svelte';
-	import type { Snippet } from 'svelte';
+	import { tick, type Snippet } from 'svelte';
 
 	const { children }: { children: Snippet } = $props();
 
 	let prevActive = $state(false);
 	let nextActive = $state(false);
+	let isOverflowing = $state(true);
 
 	let emblaApi: EmblaCarouselType | null = null;
 	const options: EmblaOptionsType = { dragFree: true };
 	const goToPrev = () => emblaApi?.scrollPrev();
 	const goToNext = () => emblaApi?.scrollNext();
 
+	const updateStates = (embla: EmblaCarouselType) => {
+		nextActive = embla.canScrollNext();
+		prevActive = embla.canScrollPrev();
+		isOverflowing = prevActive || nextActive;
+	};
+
 	const onInit = (event: CustomEvent<EmblaCarouselType>) => {
 		const embla = event.detail;
-		const syncEvents: EmblaEventType[] = ['slidesChanged', 'select', 'reInit'];
-		const updateNav = () => {
-			nextActive = embla.canScrollNext();
-			prevActive = embla.canScrollPrev();
-		};
+		const syncEvents: EmblaEventType[] = ['select', 'reInit'];
+
 		const syncButtons = (hook: 'off' | 'on') => {
-			for (const ev of syncEvents) embla[hook](ev, updateNav);
+			for (const ev of syncEvents) embla[hook](ev, updateStates);
 		};
 
 		//update states on init
-		updateNav();
+		updateStates(embla);
 
 		// attach listeners and cleanup
 		syncButtons('on');
 		embla.on('destroy', () => syncButtons('off'));
 		emblaApi = embla;
 	};
+
+	const onResize = async () => {
+		isOverflowing = true;
+		await tick();
+		emblaApi?.reInit();
+	};
 </script>
 
-<div class="embla">
+<div class="embla" use:reSize={onResize}>
 	<button class="nav embla__prev" aria-label="Prev" onclick={goToPrev} disabled={!prevActive}>
 		<svg
 			viewBox="0 0 24 24"
@@ -47,7 +58,12 @@
 			<polyline points="15 18 9 12 15 6" />
 		</svg>
 	</button>
-	<div class="embla__viewport" use:useEmblaCarousel={{ options, plugins: [] }} onemblaInit={onInit}>
+	<div
+		class="embla__viewport"
+		class:no-overflow={!isOverflowing}
+		use:useEmblaCarousel={{ options, plugins: [] }}
+		onemblaInit={onInit}
+	>
 		<div class="embla__container">
 			{@render children()}
 		</div>
@@ -72,7 +88,7 @@
 		&:hover > .nav {
 			visibility: visible;
 		}
-		
+
 		.nav {
 			visibility: hidden;
 
